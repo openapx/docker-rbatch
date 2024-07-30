@@ -1,0 +1,15 @@
+# dependency for openssl
+libssl-dev
+
+# dependency for xml2
+libxml2-dev
+
+# textshaping
+libharfbuzz-dev
+libfribidi-dev
+
+# nloptr
+cmake
+
+# pandoc
+pandoc

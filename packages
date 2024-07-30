@@ -1,0 +1,34 @@
+# basis is tidyverse
+tidyverse
+
+# languages
+rJava
+
+# survival
+survival
+survMiner
+flexsurv
+survMisc
+survRM2
+
+# models
+nlme
+mmrm
+nloptr
+
+# reporting
+pandoc
+rmarkdown
+r2rtf
+officer
+pharmaRTF
+xtable
+
+# import/export
+xportr
+haven
+xlsx
+readxl
+
+# utilities
+httr2
