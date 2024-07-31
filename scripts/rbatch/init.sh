@@ -76,7 +76,7 @@ if [ -f "$(dirname $0)/R/install_adminutils.R" ]; then
   mkdir -p /sources/adminutils
 
   echo "   installing admin utility packages"
-  /opt/R/${R_VERSION}/bin/R CMD BATCH $(dirname $0)/R/install_adminutils.R /logs/R/rbatch/${R_VERSION}-install-adminutils.log
+  /opt/R/${R_VERSION}/bin/R CMD BATCH --no-restore --no-save $(dirname $0)/R/install_adminutils.R /logs/R/rbatch/${R_VERSION}-install-adminutils.log
 
   for XSOURCE in $( ls /sources/adminutils | sort ); do
 

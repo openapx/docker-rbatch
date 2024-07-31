@@ -24,7 +24,7 @@ for R_VERSION in $( ls /opt/R | grep "^[0-9].[0-9].[0-9]$" ); do
     chmod u+rwx ${RVER_SITE_LIB}    	
 
     echo "   install packages (this step takes time)"
-    /opt/R/${R_VERSION}/bin/R CMD BATCH $(dirname $0)/R/install_packages.R /logs/R/rbatch/${R_VERSION}-install-packages-${DT_STAMP}.log 
+    /opt/R/${R_VERSION}/bin/R CMD BATCH --no-restore --no-save $(dirname $0)/R/install_packages.R /logs/R/rbatch/${R_VERSION}-install-packages-${DT_STAMP}.log 
 
     for XSOURCE in $( ls /sources/packages | sort ); do
 
