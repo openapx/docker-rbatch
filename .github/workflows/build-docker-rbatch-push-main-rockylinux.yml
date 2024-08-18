@@ -1,21 +1,23 @@
-# This workflow will re-baseline rbatch image 
+# This workflow will build rbatch image from rbin:latest and publish 
 
-name: Build and publish rbatch develoment image
+name: Rocky Linux -- Build and publish prod rbatch image
 
 on:
   push:
     branches:
-      - dev
-      - development
+      - main
     paths:
-      - '.github/workflows/build-docker.yml'
-      - 'docker/rbatch/Dockerfile-baseline-ubuntu'
-      - 'scripts/rbatch/init.sh'
-      - 'scripts/rbatch/R/install_adminutils.R'
-      - 'packages-adminutils'
+      - '!README.md'
+      - '.github/workflows/*-rockylinux.yml'
+      - 'docker/rbatch/*-rockylinux'
+      - '*-rockylinux'
+      - 'packages'
+      - 'packages-*'
+      - 'scripts/rbatch/**'
+
 
 env:
-  OS_TAG: "ubuntu"
+  OS_TAG: "rockylinux"
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 
@@ -45,16 +47,18 @@ jobs:
       - name: Note branch
         run: echo "Branch is ${{env.BRANCH_NAME}}" 
 
-      - name: Dev build and push Docker image
-        id: devpush
+      - name: Prod - Build and push Docker image
+        id: prodpush
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker/rbatch/Dockerfile-${{ env.OS_TAG }}
+          file: docker/rbatch/Dockerfile-rbatch-${{ env.OS_TAG }}
           push: true
           tags: |
-            ${{ github.repository_owner }}/rbatch:${{ vars.VERSION_MAJOR }}.${{ vars.VERSION_MINOR }}-dev.${{ github.run_id}}-${{ env.OS_TAG }}
-            ${{ github.repository_owner }}/rbatch:dev-${{ env.OS_TAG }}
+            ${{ github.repository_owner }}/rbatch:${{ vars.VERSION_MAJOR}}.${{ vars.VERSION_MINOR }}.${{ github.run_number}}-${{ env.OS_TAG }}
+            ${{ github.repository_owner }}/rbatch:${{ vars.VERSION_MAJOR}}.${{ vars.VERSION_MINOR }}.${{ github.run_number}}-${{ github.sha}}-${{ env.OS_TAG }}
+            ${{ github.repository_owner }}/rbatch:${{ vars.VERSION_MAJOR}}.${{ vars.VERSION_MINOR }}-latest-${{ env.OS_TAG }}
+            ${{ github.repository_owner }}/rbatch:latest-${{ env.OS_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
       
 #      - name: Generate artifact attestation

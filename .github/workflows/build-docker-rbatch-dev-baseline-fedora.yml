@@ -1,7 +1,6 @@
-# Simple workflow to incrementally add additional packages 
-# to rbatch development image
+# This workflow will re-baseline rbatch development image 
 
-name: Add packages to rbatch development Docker image
+name: Fedora -- Build and publish rbatch baseline develoment image
 
 on:
   push:
@@ -9,17 +8,17 @@ on:
       - dev
       - development
     paths:
-      - '.github/workflows/build-docker-dev-packages.yml'
-      - 'docker/rbatch/Dockerfile-packages-ubuntu'
-      - '!packages-adminutils'
-      - 'packages'
-      - 'packages-*'
-      - 'scripts/rbatch/install_packages.sh'
-      - 'scripts/rbatch/R/install_packages.R'
-      
+      - '.github/workflows/build-docker-rbatch-dev-baseline-fedora.yml'
+      - 'docker/rbatch/Dockerfile-rbatch-fedora'
+      - 'scripts/rbatch/*.sh'
+      - 'scripts/rbatch/R/*.R'
+      - 'libs-fedora'
+      - 'packages-adminutils'
+  workflow_dispatch:
+
 
 env:
-  OS_TAG: "ubuntu"
+  OS_TAG: "fedora"
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 
@@ -50,18 +49,16 @@ jobs:
         run: echo "Branch is ${{env.BRANCH_NAME}}" 
 
       - name: Dev build and push Docker image
-        if: ${{ env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'development' }} 
         id: devpush
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker/rbatch/Dockerfile-dev-${{ env.OS_TAG }}
+          file: docker/rbatch/Dockerfile-rbatch-${{ env.OS_TAG }}
           push: true
           tags: |
             ${{ github.repository_owner }}/rbatch:${{ vars.VERSION_MAJOR }}.${{ vars.VERSION_MINOR }}-dev.${{ github.run_id}}-${{ env.OS_TAG }}
             ${{ github.repository_owner }}/rbatch:dev-${{ env.OS_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
-     
       
 #      - name: Generate artifact attestation
 #        uses: actions/attest-build-provenance@v1

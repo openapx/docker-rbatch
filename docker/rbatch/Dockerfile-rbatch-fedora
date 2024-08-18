@@ -1,6 +1,7 @@
-# Base rbatch ubuntu on latest ubuntu rbin 
-FROM openapx/rbin:latest-ubuntu
+# Base rbatch ubuntu on latest Rocky linux rbin 
+FROM openapx/rbin:latest-fedora
 
+# note: this is the baseline "fresh" install of packages based on rbin 
 
 # -- add license file to root directory
 COPY LICENSE /LICENSE-rbatch
@@ -10,7 +11,7 @@ RUN  chmod u+r-wx,g+r-wx,o+r-wx /LICENSE-rbatch
 # -- configuration files
 #    note: this is the input location for Shell scripts below
 
-COPY libs packages-* packages /opt/openapx/config/rbatch/
+COPY libs-fedora packages-* packages /opt/openapx/config/rbatch/
 
 RUN find /opt/openapx/config/rbatch -type f -exec chmod u+r-wx,g+r-wx,o-rwx {} \; && \
     find /opt/openapx/config/rbatch -type d -exec chmod u+rx-w,g+rx-w,o-rwx {} \;
@@ -24,8 +25,8 @@ RUN find /opt/openapx/config/rbatch -type f -exec chmod u+r-wx,g+r-wx,o-rwx {} \
 #    4) clean up
 
 COPY scripts/rbatch/R/ /scripts/rbatch/R/
-COPY --chmod=755 scripts/rbatch/bin-libs.sh scripts/rbatch/install_packages.sh scripts/rbatch/init.sh /scripts/rbatch/
-RUN /scripts/rbatch/bin-libs.sh && \
+COPY --chmod=755 scripts/rbatch/init.sh scripts/rbatch/install_packages.sh /scripts/rbatch/
+RUN /opt/openapx/utilities/bin-libs.sh /opt/openapx/config/rbatch/libs-fedora && \
     /scripts/rbatch/init.sh && \
     /scripts/rbatch/install_packages.sh && \
     rm -Rf /scripts /sources
