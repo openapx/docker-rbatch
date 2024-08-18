@@ -1,0 +1,32 @@
+# Base rbatch ubuntu on latest debian rbin 
+FROM openapx/rbin:latest-debian
+
+# note: this is the baseline "fresh" install of packages based on rbin 
+
+# -- add license file to root directory
+COPY LICENSE /LICENSE-rbatch
+RUN  chmod u+r-wx,g+r-wx,o+r-wx /LICENSE-rbatch
+
+
+# -- configuration files
+#    note: this is the input location for Shell scripts below
+
+COPY libs-debian packages-* packages /opt/openapx/config/rbatch/
+
+RUN find /opt/openapx/config/rbatch -type f -exec chmod u+r-wx,g+r-wx,o-rwx {} \; && \
+    find /opt/openapx/config/rbatch -type d -exec chmod u+rx-w,g+rx-w,o-rwx {} \;
+
+
+
+# -- scripted sequence
+#    1) add binary library dependencies
+#    2) initialize rbatch scaffolding and install admin utility packages
+#    3) install packages
+#    4) clean up
+
+COPY scripts/rbatch/R/ /scripts/rbatch/R/
+COPY --chmod=755 scripts/rbatch/init.sh scripts/rbatch/install_packages.sh /scripts/rbatch/
+RUN /opt/openapx/utilities/bin-libs.sh /opt/openapx/config/rbatch/libs-debian && \
+    /scripts/rbatch/init.sh && \
+    /scripts/rbatch/install_packages.sh && \
+    rm -Rf /scripts /sources

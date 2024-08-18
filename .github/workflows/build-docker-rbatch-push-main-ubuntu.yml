@@ -1,13 +1,20 @@
 # This workflow will build rbatch image from rbin:latest and publish 
 
-name: Build and publish rbatch image
+name: Ubuntu -- Build and publish prod rbatch image
 
 on:
   push:
     branches:
       - main
     paths:
-      - !README.md
+      - '!README.md'
+      - '.github/workflows/*-ubuntu.yml'
+      - 'docker/rbatch/*-ubuntu'
+      - '*-ubuntu'
+      - 'packages'
+      - 'packages-*'
+      - 'scripts/rbatch/**'
+
 
 env:
   OS_TAG: "ubuntu"
@@ -45,7 +52,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker/rbatch/Dockerfile-${{ env.OS_TAG }}
+          file: docker/rbatch/Dockerfile-rbatch-${{ env.OS_TAG }}
           push: true
           tags: |
             ${{ github.repository_owner }}/rbatch:${{ vars.VERSION_MAJOR}}.${{ vars.VERSION_MINOR }}.${{ github.run_number}}-${{ env.OS_TAG }}

@@ -1,0 +1,31 @@
+# Container image that runs your code
+FROM openapx/rbatch:dev-ubuntu
+
+# note: this is the "add packages" process to the existing rbatch development image
+
+# -- configuration files
+#    note: this is the input location for Shell scripts below
+#    todo: restrict to only copy files required
+
+COPY libs-ubuntu packages packages-* /opt/openapx/config/rbatch/
+
+RUN find /opt/openapx/config/rbatch -type f -exec chmod u+r-wx,g+r-wx,o-rwx {} \; && \
+    find /opt/openapx/config/rbatch -type d -exec chmod u+rx-w,g+rx-w,o-rwx {} \;
+
+
+# -- scripted sequence
+#    1) add binary library dependencies
+#    2) install packages
+#    3) clean up
+#
+#    note: expecting that the container is initialized at this point … 
+
+COPY scripts/rbatch/R/ /scripts/rbatch/R/
+COPY --chmod=755 scripts/rbatch/install_packages.sh /scripts/rbatch/
+RUN /opt/openapx/utilities/bin-libs.sh /opt/openapx/config/rbatch/libs-ubuntu && \
+    /scripts/rbatch/install_packages.sh && \
+    rm -Rf /scripts /sources
+
+
+
+
