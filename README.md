@@ -27,6 +27,8 @@ The latest development release (corresponds to the *development* branch) can be 
 docker pull openapx/rbatch:dev-ubuntu
 ```
 
+Images currently available are based on Ubuntu, Debian, Fedora and Rocky Linux.
+
 <br>
 
 ### Basic configuration
